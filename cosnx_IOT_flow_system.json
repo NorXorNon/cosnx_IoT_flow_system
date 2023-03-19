@@ -6,15 +6,5 @@
         "disabled": false,
         "info": "",
         "env": []
-    },
-    {
-        "id": "549b57d28e5ee559",
-        "type": "comment",
-        "z": "78407895f1783828",
-        "name": "",
-        "info": "Hello world",
-        "x": 200,
-        "y": 200,
-        "wires": []
     }
 ]
