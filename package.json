@@ -1,0 +1,12 @@
+{
+    "name": "ESP32_IOT_system",
+    "description": "This project consist of ESP32 as Data soure using MQTT protocol via WIFI/LORAWAN to comunicate with server. The backend provide flow by nodered which comunicate to Influxdb as timeseries db and visualize by grafana",
+    "version": "0.0.1",
+    "dependencies": {},
+    "node-red": {
+        "settings": {
+            "flowFile": "cosnx_IOT_flow_system.json",
+            "credentialsFile": "cosnx_IOT_flow_system_cred.json"
+        }
+    }
+}
