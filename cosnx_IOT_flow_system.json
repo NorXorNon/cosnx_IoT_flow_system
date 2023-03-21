@@ -8,13 +8,300 @@
         "env": []
     },
     {
-        "id": "cbd215da2f3f9426",
+        "id": "33b1f088221bfa4a",
+        "type": "junction",
+        "z": "78407895f1783828",
+        "x": 1106,
+        "y": 302,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "64574dca87ad12a1",
+        "type": "mqtt-broker",
+        "name": "",
+        "broker": "broker.emqx.io",
+        "port": "1883",
+        "clientid": "",
+        "autoConnect": true,
+        "usetls": false,
+        "protocolVersion": "4",
+        "keepalive": "60",
+        "cleansession": true,
+        "birthTopic": "",
+        "birthQos": "0",
+        "birthPayload": "",
+        "birthMsg": {},
+        "closeTopic": "",
+        "closeQos": "0",
+        "closePayload": "",
+        "closeMsg": {},
+        "willTopic": "",
+        "willQos": "0",
+        "willPayload": "",
+        "willMsg": {},
+        "userProps": "",
+        "sessionExpiry": ""
+    },
+    {
+        "id": "232ece82356ea887",
+        "type": "influxdb",
+        "hostname": "127.0.0.1",
+        "port": "8086",
+        "protocol": "http",
+        "database": "database",
+        "name": "Nodered_to_InfluxDB",
+        "usetls": false,
+        "tls": "",
+        "influxdbVersion": "2.0",
+        "url": "http://docker-compose_influxdb_grafana_nodered-influxdb-1:8086",
+        "rejectUnauthorized": true
+    },
+    {
+        "id": "560b3baf35d3277e",
+        "type": "mqtt in",
+        "z": "78407895f1783828",
+        "name": "",
+        "topic": "esp32/scos",
+        "qos": "0",
+        "datatype": "auto-detect",
+        "broker": "64574dca87ad12a1",
+        "nl": false,
+        "rap": true,
+        "rh": 0,
+        "inputs": 0,
+        "x": 210,
+        "y": 300,
+        "wires": [
+            [
+                "152f4aab3674f181"
+            ]
+        ]
+    },
+    {
+        "id": "3b2e95fafeac6168",
+        "type": "debug",
+        "z": "78407895f1783828",
+        "name": "debug 1",
+        "active": true,
+        "tosidebar": true,
+        "console": true,
+        "tostatus": false,
+        "complete": "true",
+        "targetType": "full",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 710,
+        "y": 200,
+        "wires": []
+    },
+    {
+        "id": "9d2fd9b880618c79",
+        "type": "function",
+        "z": "78407895f1783828",
+        "name": "data arrange",
+        "func": "\nvar temp = [\n    msg.payload[0],\n    msg.payload[1],\n    msg.payload[2],\n    msg.payload[3],\n    msg.payload[4],\n    msg.payload[5],\n    msg.payload[6],\n    msg.payload[7],\n    msg.payload[8],\n    msg.payload[9],\n    msg.payload[10],\n]\n\nmsg.payload = []\nvar device = ['0x',temp[3], temp[2], temp[1], temp[0]].join('');\n\nmsg.measurement = device;\n\nmsg.payload = {\n    \"Battery\": temp[4],\n    \"D1\": temp[5],\n    \"D2\": temp[6],\n    \"D3\": temp[7],\n    \"D4\": temp[8],\n    \"D5\": temp[9],\n    \"D6\": temp[10],\n}\n    \nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 810,
+        "y": 300,
+        "wires": [
+            [
+                "590cee7c2ede54ca",
+                "690e9fcf895dcce6"
+            ]
+        ]
+    },
+    {
+        "id": "1ca8ecc15c6e583b",
         "type": "comment",
         "z": "78407895f1783828",
-        "name": "ac1",
-        "info": "sda",
+        "name": "Battery consumption",
+        "info": "15 seconds on broadcast information about 10 message size of 12 byte/message\n\nconsume around 110 mAh\n\non deepsleep\n\nconsume around 15 mAh\n\nBattery size 1000mAh\n\nworking per 1 day = 15 sec * 6 (1 hrs work 6 times)  * 24 (24 hrs work time)\n                  = 2160 sec => 0.6 hrs/day\nconsume on work   = 0.6*110 => 66 mAh\nconsume on sleep  = 23.4*15 => 351 mAh\noverall consume   = 417 mAh/day\nestimate date working time = 2 day @ ~20% battery loss\n\nLOG1: start collecting time 24/02/2023 @ 4.54PM (0 value at start both temp and humidity)\nLOG2: run out of battery should be around 26/02/2023 @ ~4PM\nLOG3: Battery runout on 28/2/2023 @ 1.52 pm",
+        "x": 790,
+        "y": 80,
+        "wires": []
+    },
+    {
+        "id": "152f4aab3674f181",
+        "type": "buffer-parser",
+        "z": "78407895f1783828",
+        "name": "package Decoder",
+        "data": "payload",
+        "dataType": "msg",
+        "specification": "spec",
+        "specificationType": "ui",
+        "items": [
+            {
+                "type": "hex",
+                "name": "uid1",
+                "offset": 3,
+                "length": 1,
+                "offsetbit": 0,
+                "scale": "1",
+                "mask": ""
+            },
+            {
+                "type": "hex",
+                "name": "uid2",
+                "offset": 2,
+                "length": 1,
+                "offsetbit": 0,
+                "scale": "1",
+                "mask": ""
+            },
+            {
+                "type": "hex",
+                "name": "uid3",
+                "offset": 1,
+                "length": 1,
+                "offsetbit": 0,
+                "scale": "1",
+                "mask": ""
+            },
+            {
+                "type": "hex",
+                "name": "uid4",
+                "offset": 0,
+                "length": 1,
+                "offsetbit": 0,
+                "scale": "1",
+                "mask": ""
+            },
+            {
+                "type": "uint32le",
+                "name": "bat",
+                "offset": 4,
+                "length": 1,
+                "offsetbit": 0,
+                "scale": "1",
+                "mask": ""
+            },
+            {
+                "type": "floatle",
+                "name": "temperature",
+                "offset": 8,
+                "length": 1,
+                "offsetbit": 0,
+                "scale": "1",
+                "mask": ""
+            },
+            {
+                "type": "floatle",
+                "name": "humidity",
+                "offset": 12,
+                "length": 1,
+                "offsetbit": 0,
+                "scale": "1",
+                "mask": ""
+            },
+            {
+                "type": "floatle",
+                "name": "sen3",
+                "offset": 16,
+                "length": 1,
+                "offsetbit": 0,
+                "scale": "1",
+                "mask": ""
+            },
+            {
+                "type": "uint32le",
+                "name": "sen4",
+                "offset": 20,
+                "length": 1,
+                "offsetbit": 0,
+                "scale": "1",
+                "mask": ""
+            },
+            {
+                "type": "uint32le",
+                "name": "sen5",
+                "offset": 24,
+                "length": 1,
+                "offsetbit": 0,
+                "scale": "1",
+                "mask": ""
+            },
+            {
+                "type": "uint32le",
+                "name": "sen6",
+                "offset": 28,
+                "length": 1,
+                "offsetbit": 0,
+                "scale": "1",
+                "mask": ""
+            }
+        ],
+        "swap1": "",
+        "swap2": "",
+        "swap3": "",
+        "swap1Type": "swap",
+        "swap2Type": "swap",
+        "swap3Type": "swap",
+        "msgProperty": "payload",
+        "msgPropertyType": "str",
+        "resultType": "value",
+        "resultTypeType": "return",
+        "multipleResult": false,
+        "fanOutMultipleResult": false,
+        "setTopic": false,
+        "outputs": 1,
         "x": 490,
-        "y": 380,
+        "y": 300,
+        "wires": [
+            [
+                "9d2fd9b880618c79",
+                "3b2e95fafeac6168"
+            ]
+        ]
+    },
+    {
+        "id": "82b345dfabe757f4",
+        "type": "comment",
+        "z": "78407895f1783828",
+        "name": "server config",
+        "info": "influxDB\nuser: cosnx\npwd: cosnx159753",
+        "x": 990,
+        "y": 80,
+        "wires": []
+    },
+    {
+        "id": "590cee7c2ede54ca",
+        "type": "debug",
+        "z": "78407895f1783828",
+        "name": "debug 2",
+        "active": true,
+        "tosidebar": true,
+        "console": true,
+        "tostatus": false,
+        "complete": "true",
+        "targetType": "full",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 1030,
+        "y": 200,
+        "wires": []
+    },
+    {
+        "id": "690e9fcf895dcce6",
+        "type": "influxdb out",
+        "z": "78407895f1783828",
+        "influxdb": "232ece82356ea887",
+        "name": "write_influxDB",
+        "measurement": "",
+        "precision": "",
+        "retentionPolicy": "",
+        "database": "database",
+        "precisionV18FluxV20": "s",
+        "retentionPolicyV18Flux": "",
+        "org": "COSNX_tech",
+        "bucket": "sensor_info",
+        "x": 1100,
+        "y": 300,
         "wires": []
     }
 ]
